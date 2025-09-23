@@ -10,7 +10,9 @@ const displayBooks = () => {
   books.forEach((item) => {
     const div = document.createElement("div");
     const ul = document.createElement("ul");
-
+    const del = document.createElement("button");
+    del.textContent="Delete";
+    div.setAttribute("data-id", item.id);
     for (let x in item) {
       const li = document.createElement("li");
       li.textContent = `${x}:${item[x]}`;
@@ -18,8 +20,23 @@ const displayBooks = () => {
     }
 
     div.appendChild(ul);
+    div.appendChild(del);
     div.classList.add("innerDiv");
     display.appendChild(div);
+
+    del.addEventListener("click",()=>{
+        const newDiv= document.querySelector(`[data-id="${item.id}"]`);
+
+        newDiv.remove();
+       
+    
+        
+
+        })
+       
+
+     
+    
   });
 };
 
@@ -38,6 +55,7 @@ Book.prototype.addBook = function (title, author, pages, read) {
   };
   books.push(obj);
    displayBooks();
+   console.log(books);
 };
 
 
