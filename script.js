@@ -4,81 +4,65 @@ const display = document.querySelector(".display");
 const container = document.querySelector(".container");
 function Book() {}
 
-
-const displayBooks = () => {
-    display.innerHTML="";
-  books.forEach((item) => {
-    const div = document.createElement("div");
-    const ul = document.createElement("ul");
-    const del = document.createElement("button");
-    del.textContent="Delete";
-    div.setAttribute("data-id", item.id);
-    for (let x in item) {
-      const li = document.createElement("li");
-      li.textContent = `${x}:${item[x]}`;
-      ul.appendChild(li);
-    }
-
-    div.appendChild(ul);
-    div.appendChild(del);
-    div.classList.add("innerDiv");
-    display.appendChild(div);
-
-    del.addEventListener("click",()=>{
-        const newDiv= document.querySelector(`[data-id="${item.id}"]`);
-
-        newDiv.remove();
-       
-    
-        
-
-        })
-       
-
-     
-    
-  });
-};
-
-
 Book.prototype.addBook = function (title, author, pages, read) {
   this.title = title;
   this.author = author;
   this.pages = pages;
   this.read = read;
-  let obj = {
-    Title: this.title,
-    Author: this.author,
-    "No. of Pages": this.pages,
-    read: this.read,
-    id: crypto.randomUUID(),
-  };
-  books.push(obj);
-   displayBooks();
-   console.log(books);
+  this.id = crypto.randomUUID();
 };
 
-
-
+Book.prototype.toogleRead = function () {
+  if (this.read === "Yes") {
+    this.read = "No";
+  } else {
+    this.read = "Yes";
+  }
+};
 
 Book.prototype.info = function info() {
   return `${this.title} by ${this.author}, ${this.pages}, ${this.read}`;
 };
 
-const book1 = new Book();
-const book2 = new Book();
-const book3 = new Book();
-const book4 = new Book();
-book1.addBook("harry puttar", "jj bowling", 285, "not read");
-book2.addBook("garry puttar", "jj bowling", 285, "not read");
-book3.addBook("garry puttar", "jj bowling", 285, "not read");
-book4.addBook("garry puttar", "jj bowling", 285, "not read");
+const displayBooks = () => {
+  display.innerHTML = "";
+  books.forEach((item) => {
+    const div = document.createElement("div");
+    const ul = document.createElement("ul");
+    const del = document.createElement("button");
+    const readBtn = document.createElement("button");
+    del.textContent = "Delete";
+    readBtn.textContent = "Read";
+    div.setAttribute("data-id", item.id);
+    ul.innerHTML = `
+        <li>Title: ${item.title}</li>
+      <li>Author: ${item.author}</li>
+      <li>No. of Pages: ${item.pages}</li>
+      <li>Read: ${item.read}</li>
+    `;
 
+    div.appendChild(ul);
+    div.appendChild(del);
+    div.appendChild(readBtn);
+    div.classList.add("innerDiv");
+    display.appendChild(div);
 
+    del.addEventListener("click", () => {
+      const bookIndex = books.findIndex((book) => book.id === item.id);
 
+      books.splice(bookIndex, 1);
+
+      displayBooks();
+    });
+    readBtn.addEventListener("click", () => {
+      item.toogleRead();
+      displayBooks();
+    });
+  });
+};
 
 bookBtn.addEventListener("click", (event) => {
-     event.preventDefault();
+  event.preventDefault();
   const form = document.createElement("form");
   const title = document.createElement("input");
   const author = document.createElement("input");
@@ -95,14 +79,13 @@ bookBtn.addEventListener("click", (event) => {
 
   container.appendChild(form);
 
-  createBookBtn.addEventListener("click",(event)=>{
+  createBookBtn.addEventListener("click", (event) => {
     event.preventDefault();
-    const newBook= new Book();
-    newBook.addBook(title.value,author.value,pages.value,read.value);
-   const formDiv= document.querySelector(".form");
+    const newBook = new Book();
+    newBook.addBook(title.value, author.value, pages.value, read.value);
+    books.push(newBook);
+    displayBooks();
+    const formDiv = document.querySelector(".form");
     formDiv.parentNode.removeChild(formDiv);
-       
-
-  })
+  });
 });
-
