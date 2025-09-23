@@ -31,6 +31,8 @@ const displayBooks = () => {
     const ul = document.createElement("ul");
     const del = document.createElement("button");
     const readBtn = document.createElement("button");
+    const btnDiv= document.createElement("div");
+    btnDiv.classList.add("btnDiv");
     del.textContent = "Delete";
     readBtn.textContent = "Read";
     div.setAttribute("data-id", item.id);
@@ -42,8 +44,9 @@ const displayBooks = () => {
     `;
 
     div.appendChild(ul);
-    div.appendChild(del);
-    div.appendChild(readBtn);
+    btnDiv.appendChild(del);
+    btnDiv.appendChild(readBtn);
+    div.appendChild(btnDiv);
     div.classList.add("innerDiv");
     display.appendChild(div);
 
@@ -62,12 +65,20 @@ const displayBooks = () => {
 };
 
 bookBtn.addEventListener("click", (event) => {
+  const existingForm = document.querySelector(".form");
+  if (existingForm) {
+    return;
+  }
   event.preventDefault();
   const form = document.createElement("form");
   const title = document.createElement("input");
+  title.placeholder = "Enter Book Name";
   const author = document.createElement("input");
+  author.placeholder = "Enter Author Name";
   const pages = document.createElement("input");
+  pages.placeholder = "Enter No. Of Pages";
   const read = document.createElement("input");
+  read.placeholder = "Read Status:Yes/No";
   const createBookBtn = document.createElement("button");
   form.classList.add("form");
   createBookBtn.textContent = "Create";
