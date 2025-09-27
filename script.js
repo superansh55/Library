@@ -1,32 +1,43 @@
+const bookStorage=(function(){
 const books = [];
-const bookBtn = document.querySelector(".bookBtn");
-const display = document.querySelector(".display");
-const container = document.querySelector(".container");
-function Book() {}
 
-Book.prototype.addBook = function (title, author, pages, read) {
+const getBooks=()=>books;
+
+return{getBooks};
+})()
+
+
+
+class Book{
+
+ addBook(title, author, pages, read) {
   this.title = title;
   this.author = author;
   this.pages = pages;
   this.read = read;
   this.id = crypto.randomUUID();
 };
-
-Book.prototype.toogleRead = function () {
+toogleRead() {
   if (this.read === "Yes") {
     this.read = "No";
   } else {
     this.read = "Yes";
   }
 };
-
-Book.prototype.info = function info() {
+info() {
   return `${this.title} by ${this.author}, ${this.pages}, ${this.read}`;
 };
 
+}
+
+const bookDisplay = (function(){
+  const bookBtn = document.querySelector(".bookBtn");
+const display = document.querySelector(".display");
+const container = document.querySelector(".container");
+const booksCopy=bookStorage.getBooks();
 const displayBooks = () => {
   display.innerHTML = "";
-  books.forEach((item) => {
+  booksCopy.forEach((item) => {
     const div = document.createElement("div");
     const ul = document.createElement("ul");
     const del = document.createElement("button");
@@ -51,9 +62,9 @@ const displayBooks = () => {
     display.appendChild(div);
 
     del.addEventListener("click", () => {
-      const bookIndex = books.findIndex((book) => book.id === item.id);
+      const bookIndex = booksCopy.findIndex((book) => book.id === item.id);
 
-      books.splice(bookIndex, 1);
+      booksCopy.splice(bookIndex, 1);
 
       displayBooks();
     });
@@ -94,9 +105,11 @@ bookBtn.addEventListener("click", (event) => {
     event.preventDefault();
     const newBook = new Book();
     newBook.addBook(title.value, author.value, pages.value, read.value);
-    books.push(newBook);
+    booksCopy.push(newBook);
     displayBooks();
     const formDiv = document.querySelector(".form");
     formDiv.parentNode.removeChild(formDiv);
   });
 });
+} )();
+
