@@ -1,115 +1,104 @@
-const bookStorage=(function(){
-const books = [];
+class Book {
+  static books = [];
 
-const getBooks=()=>books;
-
-return{getBooks};
-})()
-
-
-
-class Book{
-
- addBook(title, author, pages, read) {
-  this.title = title;
-  this.author = author;
-  this.pages = pages;
-  this.read = read;
-  this.id = crypto.randomUUID();
-};
-toogleRead() {
-  if (this.read === "Yes") {
-    this.read = "No";
-  } else {
-    this.read = "Yes";
+  addBook(title, author, pages, read) {
+    this.title = title;
+    this.author = author;
+    this.pages = pages;
+    this.read = read;
+    this.id = crypto.randomUUID();
   }
-};
-info() {
-  return `${this.title} by ${this.author}, ${this.pages}, ${this.read}`;
-};
-
+  toogleRead() {
+    if (this.read === "Yes") {
+      this.read = "No";
+    } else {
+      this.read = "Yes";
+    }
+  }
+  info() {
+    return `${this.title} by ${this.author}, ${this.pages}, ${this.read}`;
+  }
 }
 
-const bookDisplay = (function(){
+const bookDisplay = (function () {
   const bookBtn = document.querySelector(".bookBtn");
-const display = document.querySelector(".display");
-const container = document.querySelector(".container");
-const booksCopy=bookStorage.getBooks();
-const displayBooks = () => {
-  display.innerHTML = "";
-  booksCopy.forEach((item) => {
-    const div = document.createElement("div");
-    const ul = document.createElement("ul");
-    const del = document.createElement("button");
-    const readBtn = document.createElement("button");
-    const btnDiv= document.createElement("div");
-    btnDiv.classList.add("btnDiv");
-    del.textContent = "Delete";
-    readBtn.textContent = "Read";
-    div.setAttribute("data-id", item.id);
-    ul.innerHTML = `
+  const display = document.querySelector(".display");
+  const container = document.querySelector(".container");
+  const booksCopy = Book.books;
+  const displayBooks = () => {
+    display.innerHTML = "";
+    booksCopy.forEach((item) => {
+      const div = document.createElement("div");
+      const ul = document.createElement("ul");
+      const del = document.createElement("button");
+      const readBtn = document.createElement("button");
+      const btnDiv = document.createElement("div");
+      btnDiv.classList.add("btnDiv");
+      del.textContent = "Delete";
+      readBtn.textContent = "Read";
+      div.setAttribute("data-id", item.id);
+      ul.innerHTML = `
         <li>Title: ${item.title}</li>
       <li>Author: ${item.author}</li>
       <li>No. of Pages: ${item.pages}</li>
       <li>Read: ${item.read}</li>
     `;
 
-    div.appendChild(ul);
-    btnDiv.appendChild(del);
-    btnDiv.appendChild(readBtn);
-    div.appendChild(btnDiv);
-    div.classList.add("innerDiv");
-    display.appendChild(div);
+      div.appendChild(ul);
+      btnDiv.appendChild(del);
+      btnDiv.appendChild(readBtn);
+      div.appendChild(btnDiv);
+      div.classList.add("innerDiv");
+      display.appendChild(div);
 
-    del.addEventListener("click", () => {
-      const bookIndex = booksCopy.findIndex((book) => book.id === item.id);
+      del.addEventListener("click", () => {
+        const bookIndex = booksCopy.findIndex((book) => book.id === item.id);
 
-      booksCopy.splice(bookIndex, 1);
+        booksCopy.splice(bookIndex, 1);
 
-      displayBooks();
+        displayBooks();
+      });
+      readBtn.addEventListener("click", () => {
+        item.toogleRead();
+        displayBooks();
+      });
     });
-    readBtn.addEventListener("click", () => {
-      item.toogleRead();
-      displayBooks();
-    });
-  });
-};
+  };
 
-bookBtn.addEventListener("click", (event) => {
-  const existingForm = document.querySelector(".form");
-  if (existingForm) {
-    return;
-  }
-  event.preventDefault();
-  const form = document.createElement("form");
-  const title = document.createElement("input");
-  title.placeholder = "Enter Book Name";
-  const author = document.createElement("input");
-  author.placeholder = "Enter Author Name";
-  const pages = document.createElement("input");
-  pages.placeholder = "Enter No. Of Pages";
-  const read = document.createElement("input");
-  read.placeholder = "Read Status:Yes/No";
-  const createBookBtn = document.createElement("button");
-  form.classList.add("form");
-  createBookBtn.textContent = "Create";
-  form.appendChild(title);
-  form.appendChild(author);
-  form.appendChild(pages);
-  form.appendChild(read);
-  form.appendChild(createBookBtn);
-
-  container.appendChild(form);
-
-  createBookBtn.addEventListener("click", (event) => {
+  bookBtn.addEventListener("click", (event) => {
+    const existingForm = document.querySelector(".form");
+    if (existingForm) {
+      return;
+    }
     event.preventDefault();
-    const newBook = new Book();
-    newBook.addBook(title.value, author.value, pages.value, read.value);
-    booksCopy.push(newBook);
-    displayBooks();
-    const formDiv = document.querySelector(".form");
-    formDiv.parentNode.removeChild(formDiv);
-  });
-});
-} )();
+    const form = document.createElement("form");
+    const title = document.createElement("input");
+    title.placeholder = "Enter Book Name";
+    const author = document.createElement("input");
+    author.placeholder = "Enter Author Name";
+    const pages = document.createElement("input");
+    pages.placeholder = "Enter No. Of Pages";
+    const read = document.createElement("input");
+    read.placeholder = "Read Status:Yes/No";
+    const createBookBtn = document.createElement("button");
+    form.classList.add("form");
+    createBookBtn.textContent = "Create";
+    form.appendChild(title);
+    form.appendChild(author);
+    form.appendChild(pages);
+    form.appendChild(read);
+    form.appendChild(createBookBtn);
 
+    container.appendChild(form);
+
+    createBookBtn.addEventListener("click", (event) => {
+      event.preventDefault();
+      const newBook = new Book();
+      newBook.addBook(title.value, author.value, pages.value, read.value);
+      booksCopy.push(newBook);
+      displayBooks();
+      const formDiv = document.querySelector(".form");
+      formDiv.parentNode.removeChild(formDiv);
+    });
+  });
+})();
